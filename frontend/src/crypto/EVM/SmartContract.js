@@ -64,9 +64,13 @@ class SmartContract {
     async fetchUserBalance(userIdentity){
         // @todo change for real call
         //return 100
-        const Contract = await this._getInstance()
+        let abi = TokensABI.default.ABI
+        let address = Networks.getSettings(ConnectionStore.getNetwork().name).tokenAddress
+        const contract = new Contract(address, abi, this._getProvider())
+        console.log("user identity"+ userIdentity)
         try {
-            this.metaData.balance = Number(await Contract.balanceOf(userIdentity))
+            
+            this.metaData.balance = Number(await contract.balanceOf(userIdentity))
         }
         catch (e) {
             log(`[SmartContract] Error get user balance for contract ${this._address}`, e);
@@ -156,6 +160,7 @@ class SmartContract {
         }
         return true
     }
+    
 
     /*
     * @param tokensForBundle: Array<{token: contractAddress, tokenId}>
@@ -400,7 +405,7 @@ class SmartContract {
     async _getInstance(){
         if(!this._instance){
             this._instance = await new Promise( async (resolve) => {
-                let abi = TokensABI.ERC20.ABI
+                let abi = TokensABI.default.ABI
                 const contract = new Contract(this._address, abi, this._getProvider())
                 resolve(contract)
             })

@@ -3,7 +3,7 @@
 
     <form class="m-form" @submit.prevent="submit" v-show="!form.isLoading">
       <div class="m-form__title">Your balance:</div>
-      <div class="m-form__value">{{ userAmount }} USDT</div>
+      <div class="m-form__value">{{ userAmount }} USDC</div>
       <div class="m-form__input">
         <input type="text" v-model.trim="form.amount" required placeholder="Enter amount to send">
       </div>
