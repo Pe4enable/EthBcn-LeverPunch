@@ -1,8 +1,7 @@
-import ERC721 from './ERC721.json'
+import ERC20 from './ERC20.json'
 
 export default {
     default: {
-        ABI: ERC721.abi,
-        bytecode: ERC721.bytecode
+        ABI: ERC20
     }
 }

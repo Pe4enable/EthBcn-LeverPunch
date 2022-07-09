@@ -63,7 +63,7 @@ class SmartContract {
 
     async fetchUserBalance(userIdentity){
         // @todo change for real call
-        return 100
+        //return 100
         const Contract = await this._getInstance()
         try {
             this.metaData.balance = Number(await Contract.balanceOf(userIdentity))
@@ -400,10 +400,7 @@ class SmartContract {
     async _getInstance(){
         if(!this._instance){
             this._instance = await new Promise( async (resolve) => {
-                let abi;
-                if(this._type === 'bundle') abi = TokensABI.bundle.ABI
-                else if(this._type === 'allowList') abi = TokensABI.whiteList.ABI
-                else abi = TokensABI.default.ABI
+                let abi = TokensABI.ERC20.ABI
                 const contract = new Contract(this._address, abi, this._getProvider())
                 resolve(contract)
             })
