@@ -39,22 +39,7 @@ class EVM {
 
     async fetchUserTokens(){
         const storage = AppStorage.getStore()
-        storage.changeCollectionLoadingState(true)
-        const {
-            characterContract,
-            thingContract,
-            colorContract,
-            achievements
-        } = Networks.getSettings(ConnectionStore.getNetwork().name)
-
-        //todo chenge to get balance otf erc20
-        const character = await this.getContractObject(characterContract)
-
-        const collection = {
-            character: character,
-        }
-        storage.changeCollectionLoadingState(false)
-        storage.setCollections([collection])
+        
     }
 
     async getContractObject(address, byPlain = false){
