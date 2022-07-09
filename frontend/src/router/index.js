@@ -3,7 +3,7 @@ import Gallery from '../views/Gallery.vue'
 
 const routes = [
   {
-    path: '/*',
+    path: '/:pathMatch(.*)*',
     name: 'Characters',
     component: Gallery
   }

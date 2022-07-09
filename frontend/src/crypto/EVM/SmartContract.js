@@ -62,6 +62,8 @@ class SmartContract {
     }
 
     async fetchUserBalance(userIdentity){
+        // @todo change for real call
+        return 100
         const Contract = await this._getInstance()
         try {
             this.metaData.balance = Number(await Contract.balanceOf(userIdentity))
@@ -71,6 +73,14 @@ class SmartContract {
         }
         return this.metaData.balance
     }
+
+    async formHandler(amount, address){
+        const Contract = await this._getInstance()
+        // await Contract.someMethod()
+    }
+
+
+
 
     async fetchTokensForUser(userIdentity){
         const Contract = await this._getInstance()

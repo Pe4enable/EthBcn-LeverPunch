@@ -5,10 +5,9 @@
   max-width: 1200px;
   margin: auto;
   grid-template-columns: 200px auto;
-  grid-template-rows: 100px 40px auto 70px;
+  grid-template-rows: 100px auto 70px;
   grid-template-areas:
           "logo header"
-          "nav nav"
           "main main"
           "footer footer";
   gap: 30px;
@@ -21,28 +20,17 @@
 
     a{
       svg{
-        width: 100px;
+        width: 80px;
       }
+    }
+    a + a{
+      margin-left: 10px
     }
   }
 
   &__header{
     grid-area: header;
     align-self: center;
-  }
-
-  &__nav{
-    grid-area: nav;
-    display: grid;
-    grid-template-columns: auto 1fr auto auto auto auto;
-
-    &-item{
-      display: inline-block;
-      margin-bottom: 10px;
-    }
-    &-item + &-item{
-      margin-left: 10px
-    }
   }
 
   &__main{

@@ -1,5 +1,4 @@
 import {
-    API,
     Networks,
     ConnectionStore,
     Formatters,
@@ -13,6 +12,7 @@ import {stringCompare} from "@/utils/string";
 import alert from "@/utils/alert";
 import {ethers} from "ethers";
 import {log} from "@/utils/AppLogger";
+import {getData} from "@/crypto/helpers/Networks";
 
 class EVM {
 
@@ -37,9 +37,30 @@ class EVM {
     /*  ----------  Connected methods OFF  ----------  */
 
 
-    async fetchUserTokens(){
+    async fetchUserAmount(){
         const storage = AppStorage.getStore()
-        
+        const userIdentity = ConnectionStore.getUserIdentity()
+        const {fetchAmount} = Networks.getData(ConnectionStore.getNetwork().name)
+
+        const Contract = new SmartContract({
+            address: fetchAmount
+        })
+        const amount = await Contract.fetchUserBalance(userIdentity)
+        storage.setUserAmount(amount)
+    }
+
+    async formHandler({amount, address}){
+        const {fetchAmount} = Networks.getData(ConnectionStore.getNetwork().name)
+
+        const Contract = new SmartContract({
+            address: fetchAmount
+        })
+
+        Contract.formHandler(amount, address)
+    }
+
+    async fetchUserTokens(){
+
     }
 
     async getContractObject(address, byPlain = false){

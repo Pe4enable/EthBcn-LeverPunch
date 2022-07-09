@@ -160,11 +160,15 @@ export default {
                     this.getConnectedCallbackFunction().forEach(promise => promise.resolve(this._connectedOptions.address))
                     this.clearConnectedCallbackFunctions()
 
+                    if(this.controllerClass) {
+                        await this.controllerClass.fetchUserAmount()
+                    }
+
                     // update only if user change network
-                    if(needToUpdateUserTokens) updateUserTokensAction()
+                    // if(needToUpdateUserTokens) updateUserTokensAction()
 
                     // update tokens after connected
-                    if(this.controllerClass) this.controllerClass.fetchUserTokens()
+                    // if(this.controllerClass) this.controllerClass.fetchUserTokens()
                 }
                 else {
                     console.log('try to connect to unsupported network')

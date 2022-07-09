@@ -45,7 +45,8 @@ export const useStore = defineStore('main', {
         processStatus: {
             code: '',
             addition: []
-        }
+        },
+        userAmount: 0
     }),
     getters: {
         userIdentityShort: state => catToFixed(state.connection.userIdentity || ''),
@@ -54,6 +55,9 @@ export const useStore = defineStore('main', {
         }
     },
     actions: {
+        setUserAmount(value){
+            this.userAmount = value
+        },
         setProcessStatus(statusCode = '', ...additionParams){
             this.processStatus.code = statusCode
             this.processStatus.addition.splice(0, this.processStatus.addition.length, ...additionParams)

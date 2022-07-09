@@ -1,0 +1,36 @@
+.m-form{
+  text-align: center;
+  display: grid;
+  grid-template-columns: 100%;
+  gap: 20px;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+
+  &__title{
+    font-size: 14px;
+  }
+
+  &__value{
+    font-size: 30px;
+    font-weight: 500;
+  }
+
+  &__input{
+    input{
+      display: block;
+      width: 100%;
+      border: 1px solid #dddddd;
+      padding: 10px;
+      font-size: 20px;
+      text-align: center;
+    }
+  }
+
+  &__btn{
+    font-size: 16px;
+    padding: 10px 20px;
+    border: 1px solid #555;
+    cursor: pointer;
+  }
+}

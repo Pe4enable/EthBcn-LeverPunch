@@ -22,11 +22,13 @@ const settings = {
         api: 'https://api.rarible.org/v0.1',
         blockchain: 'ETHEREUM',
         adminAddress: '0xD25A41039DEfD7c7F0fBF6Db3D1Df60b232c6067',
+        fetchAmount: '0xD25A41039DEfD7c7F0fBF6Db3D1Df60b232c6067'
     },
     polygon_mainnet: {
         api: 'https://api.rarible.org/v0.1',
         blockchain: 'POLYGON',
-        adminAddress: '0xD25A41039DEfD7c7F0fBF6Db3D1Df60b232c6067'
+        adminAddress: '0xD25A41039DEfD7c7F0fBF6Db3D1Df60b232c6067',
+        fetchAmount: '0xD25A41039DEfD7c7F0fBF6Db3D1Df60b232c6067'
     }
 }
 
