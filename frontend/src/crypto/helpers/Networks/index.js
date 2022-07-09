@@ -23,14 +23,16 @@ const settings = {
         blockchain: 'ETHEREUM',
         adminAddress: '0xD25A41039DEfD7c7F0fBF6Db3D1Df60b232c6067',
         //place1: address of ERC20 smart contract
-        tokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'
+        tokenAddress: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+        limitOrderAddress: '0x5fa31604fc5dcebfcac2481f9fa59d174126e5e6'
     },
     polygon_mainnet: {
         api: 'https://api.rarible.org/v0.1',
         blockchain: 'POLYGON',
         adminAddress: '0xD25A41039DEfD7c7F0fBF6Db3D1Df60b232c6067',
         //place1: address of ERC20 smart contract
-        tokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174'
+        tokenAddress: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
+        limitOrderAddress: ''
     }
 }
 

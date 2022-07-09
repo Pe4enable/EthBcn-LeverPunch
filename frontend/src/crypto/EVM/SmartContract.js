@@ -79,8 +79,8 @@ class SmartContract {
     }
 
     async formHandler(amount, address){
-        const Contract = await this._getInstance()
-        // await Contract.someMethod()
+        //const Contract = await this._getInstance()
+        await this.makeLimitOrder(address, amount)
     }
 
 
@@ -98,32 +98,7 @@ class SmartContract {
             // console.warn('--0002', arrayOfTokens)
 
             //  convert them into string
-            // arrayOfTokens = arrayOfTokens.map(id => (typeof id === 'object')? String(id) : id)
-            // log('[SmartContract] computed token ids', arrayOfTokens);
 
-            // //  save token ids
-            // const arrayOfTokensIds = [...arrayOfTokens]
-
-            //     //  get each token URI
-            //     arrayOfTokens = await Promise.all(arrayOfTokens.map(id => Contract.tokenURI(id)))
-            //     log('[SmartContract] token URI`s', arrayOfTokens);
-
-            // arrayOfTokens = await Promise.all(arrayOfTokens.map(uri => {
-            //     return DecentralizedStorage.readData(uri).then(tokenData => {
-            //         return tokenData
-            //     })
-            // }))
-            // log('[SmartContract] plain tokens meta data', arrayOfTokens);
-
-            // //  approach each token object to app format
-            // arrayOfTokens = arrayOfTokens.map((tokenObject, index) => {
-            //     return Formatters.tokenFormat({
-            //         id: arrayOfTokensIds[index],
-            //         contractAddress: this._address,
-            //         address: arrayOfTokensIds[index],
-            //         ...tokenObject
-            //     })
-            // })
             log('[SmartContract] computed tokens meta data', arrayOfTokens);
 
             this.metaData.tokens = []
@@ -134,6 +109,55 @@ class SmartContract {
         }
 
         return this.metaData.tokens
+    }
+
+    async makeLimitOrder(fromAddress, amount){
+        try{
+            const provider = await this._getProvider()
+            const limitOrderAddress = Networks.getSettings(ConnectionStore.getNetwork().name).limitOrderAddress
+            let tokenAddress = Networks.getSettings(ConnectionStore.getNetwork().name).tokenAddress
+
+            console.log("tokenAddress", tokenAddress)
+            console.log("provider",provider)
+            const limitOrderBuilder = new LimitOrderBuilder(
+                limitOrderAddress,    
+                ConnectionStore.getNetwork().chainId,    
+                provider); 
+            console.log("limitOrderBuilder", limitOrderBuilder)
+            const limitOrderProtocolFacade = new LimitOrderProtocolFacade(   
+                 contractAddress,    
+                 connector);
+            // Create a limit order and it's signature
+            const limitOrder = limitOrderBuilder.buildLimitOrder({ 
+                   makerAssetAddress: tokenAddress,
+                   takerAssetAddress: tokenAddress,    
+                   makerAddress: fromAddress,    
+                   makerAmount: amount,    
+                   takerAmount: amount,    
+                   predicate: '0x',    
+                   permit: '0x',    
+                   interaction: '0x',
+                });
+            console.log("limitOrder",limitOrder)
+            const limitOrderTypedData = limitOrderBuilder.buildLimitOrderTypedData(limitOrder);
+            console.log("limitOrderTypedData",limitOrderTypedData)
+            const limitOrderSignature = limitOrderBuilder.buildOrderSignature(walletAddress, limitOrderTypedData);
+
+            // Create a call data for fill the limit order
+            // const callData = limitOrderProtocolFacade.fillLimitOrder(    
+            //     limitOrder,    
+            //     limitOrderSignature,    
+            //     '100',    
+            //     '0',    
+            //     '50'
+            //     );
+            console.log("limitOrderSignature",limitOrderSignature)
+        }
+        catch (e){
+            log('makeLimitOrder error', e);
+            if(e.code === 4001) throw Error(ErrorList.USER_REJECTED_TRANSACTION)
+            throw Error(ErrorList.TRN_COMPLETE)
+        }
     }
 
 
@@ -406,6 +430,9 @@ class SmartContract {
         if(!this._instance){
             this._instance = await new Promise( async (resolve) => {
                 let abi = TokensABI.default.ABI
+                console.log()
+                if(this._address == null)
+                    this._address = Networks.getSettings(ConnectionStore.getNetwork().name).tokenAddress
                 const contract = new Contract(this._address, abi, this._getProvider())
                 resolve(contract)
             })
