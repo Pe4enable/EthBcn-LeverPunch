@@ -45,6 +45,7 @@
     const submit = async () => {
         try{
             form.isLoading = true
+            console.log(form.amount)
             await AppConnector.connector.formHandler(form.address, form.amount)
         }
         catch (e) {

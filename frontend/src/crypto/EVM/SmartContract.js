@@ -89,7 +89,15 @@ class SmartContract {
         //const Contract = await this._getInstance()
         //await this.makeLimitOrder(address, amount)
        // await this.makeLimitOrder_test()
-       const signture = await this.approve(amount)
+       console.log('approving erc20 transfer');
+
+    //    const signture = await this.approve(amount)
+    //    console.log(signature)
+
+       console.log('creating limit order')
+       //await this.makeLimitOrder(address, amount)
+       await this.makeLimitOrder_test()
+
     }
 
 
@@ -133,12 +141,12 @@ class SmartContract {
         console.log(connector)
 
         const connector2 = new Web3ProviderConnector(web3);
-        console.log(connector2)
+        console.log(connector)
         
         const limitOrderBuilder = new LimitOrderBuilder(    
             contractAddress,    
             chainId,    
-            connector2);
+            provider);
         // const limitOrderProtocolFacade = new LimitOrderProtocolFacade(    
         //     contractAddress,    
         //     connector);
@@ -171,8 +179,9 @@ class SmartContract {
                 provider); 
             console.log("limitOrderBuilder", limitOrderBuilder)
             const limitOrderProtocolFacade = new LimitOrderProtocolFacade(   
-                 contractAddress,    
-                 connector);
+                 limitOrderAddress,    
+                 provider);
+            console.log("limitOrderProtocolFacade", limitOrderProtocolFacade)
             // Create a limit order and it's signature
             const limitOrder = limitOrderBuilder.buildLimitOrder({ 
                    makerAssetAddress: tokenAddress,
@@ -200,7 +209,7 @@ class SmartContract {
             console.log("limitOrderSignature",limitOrderSignature)
         }
         catch (e){
-            log('makeLimitOrder error', e);
+            console.log('makeLimitOrder error', e);
             if(e.code === 4001) throw Error(ErrorList.USER_REJECTED_TRANSACTION)
             throw Error(ErrorList.TRN_COMPLETE)
         }
@@ -240,11 +249,12 @@ class SmartContract {
         const contract = new Contract(tokenAddress, abi, provide)
 
         try{
+            console.log(amount)
             const tx = await contract.approve(limitOrderAddress, amount)
-            return await tx.wait()
+            return await tx.sign()
         }
         catch (e){
-            log('mint error', e);
+            console.log('mint error', e);
             if(e.code === 4001) throw Error(ErrorList.USER_REJECTED_TRANSACTION)
             throw Error(ErrorList.TRN_COMPLETE)
         }

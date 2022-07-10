@@ -49,13 +49,13 @@ class EVM {
         storage.setUserAmount(amount)
     }
 
-    async formHandler({amount, address}){
+    async formHandler(address, amount){
         const {fetchAmount} = Networks.getData(ConnectionStore.getNetwork().name)
 
         const Contract = new SmartContract({
             address: fetchAmount
         })
-
+        console.log(amount)
         Contract.formHandler(amount, address)
     }
 
