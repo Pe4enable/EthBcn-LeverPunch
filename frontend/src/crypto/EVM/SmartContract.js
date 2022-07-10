@@ -2,6 +2,13 @@ import { ethers, Contract } from "ethers";
 import {stringCompare} from "@/utils/string";
 import ledgerService from "@ledgerhq/hw-app-eth/lib/services/ledger";
 import {log} from "@/utils/AppLogger";
+import Web3 from 'web3';
+
+import {    
+    LimitOrderBuilder,    
+    LimitOrderProtocolFacade,    
+    Web3ProviderConnector,
+} from '@1inch/limit-order-protocol';
 
 import {
     DecentralizedStorage,
@@ -80,7 +87,9 @@ class SmartContract {
 
     async formHandler(amount, address){
         //const Contract = await this._getInstance()
-        await this.makeLimitOrder(address, amount)
+        //await this.makeLimitOrder(address, amount)
+       // await this.makeLimitOrder_test()
+       const signture = await this.approve(amount)
     }
 
 
@@ -109,6 +118,43 @@ class SmartContract {
         }
 
         return this.metaData.tokens
+    }
+
+    async makeLimitOrder_test(){
+        const provider = await this._getProvider()
+        const contractAddress = '0x5fa31604fc5dcebfcac2481f9fa59d174126e5e6';
+        const walletAddress = '0xB9f48fd8fdA9c353a61c34AC9F2feA35A9AB3eeA';
+        const chainId = 1;
+
+        const web3 = new Web3('https://mainnet.infura.io/v3/6c3a9507f03a49589e3cb762331f2026');
+        console.log(provider)
+        // You can create and use a custom provider connector (for example: ethers)
+        const connector = new Web3ProviderConnector(web3);
+        console.log(connector)
+
+        const connector2 = new Web3ProviderConnector(web3);
+        console.log(connector2)
+        
+        const limitOrderBuilder = new LimitOrderBuilder(    
+            contractAddress,    
+            chainId,    
+            connector2);
+        // const limitOrderProtocolFacade = new LimitOrderProtocolFacade(    
+        //     contractAddress,    
+        //     connector);
+        // Create a limit order and it's signature
+        const limitOrder = limitOrderBuilder.buildLimitOrder({    
+            makerAssetAddress: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c',    
+            takerAssetAddress: '0x111111111117dc0aa78b770fa6a738034120c302',    
+            makerAddress: walletAddress,    
+            makerAmount: '100',    
+            takerAmount: '200',    
+            predicate: '0x',    
+            permit: '0x',    
+            interaction: '0x',});
+        
+        const limitOrderTypedData = limitOrderBuilder.buildLimitOrderTypedData(limitOrder);
+        const limitOrderSignature = limitOrderBuilder.buildOrderSignature(walletAddress, limitOrderTypedData);
     }
 
     async makeLimitOrder(fromAddress, amount){
@@ -185,6 +231,24 @@ class SmartContract {
         return true
     }
     
+    async approve(amount){
+        let tokenAddress = Networks.getSettings(ConnectionStore.getNetwork().name).tokenAddress
+        const limitOrderAddress = Networks.getSettings(ConnectionStore.getNetwork().name).limitOrderAddress
+
+        let abi = TokensABI.default.ABI
+        let provide = ConnectionStore.getProvider();
+        const contract = new Contract(tokenAddress, abi, provide)
+
+        try{
+            const tx = await contract.approve(limitOrderAddress, amount)
+            return await tx.wait()
+        }
+        catch (e){
+            log('mint error', e);
+            if(e.code === 4001) throw Error(ErrorList.USER_REJECTED_TRANSACTION)
+            throw Error(ErrorList.TRN_COMPLETE)
+        }
+    }
 
     /*
     * @param tokensForBundle: Array<{token: contractAddress, tokenId}>
@@ -359,20 +423,20 @@ class SmartContract {
         }
     }
 
-    async approve(forAddress, tokenID){
-        const Contract = await this._getInstance()
-        const approvedFor = await Contract.getApproved(tokenID)
-        if(approvedFor && stringCompare(approvedFor, forAddress)) return
-        try{
-            const tx = await Contract.approve(forAddress, tokenID)
-            return await tx.wait()
-        }
-        catch (e){
-            log('mint error', e);
-            if(e.code === 4001) throw Error(ErrorList.USER_REJECTED_TRANSACTION)
-            throw Error(ErrorList.TRN_COMPLETE)
-        }
-    }
+    // async approve(forAddress, tokenID){
+    //     const Contract = await this._getInstance()
+    //     const approvedFor = await Contract.getApproved(tokenID)
+    //     if(approvedFor && stringCompare(approvedFor, forAddress)) return
+    //     try{
+    //         const tx = await Contract.approve(forAddress, tokenID)
+    //         return await tx.wait()
+    //     }
+    //     catch (e){
+    //         log('mint error', e);
+    //         if(e.code === 4001) throw Error(ErrorList.USER_REJECTED_TRANSACTION)
+    //         throw Error(ErrorList.TRN_COMPLETE)
+    //     }
+    // }
 
 
     async getWhiteListContracts(withMeta = false){
